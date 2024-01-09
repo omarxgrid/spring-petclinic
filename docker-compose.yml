@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  petclinic:
+    build: .
+    ports:
+      - "8083:8083"
+    depends_on:
+      - mysql
+    environment:
+      - SPRING_PROFILES_ACTIVE=mysql
+    volumes:
+      - ./target:/app/target
+
+  mysql:
+    image: mysql:8.2
+    ports:
+      - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_USER=petclinic
+      - MYSQL_PASSWORD=petclinic
+      - MYSQL_DATABASE=petclinic
+    volumes:
+      - ./conf.d:/etc/mysql/conf.d:ro
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  mysql_data:
+
+networks:
+  default:
+    driver: bridge
